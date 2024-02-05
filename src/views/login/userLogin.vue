@@ -1,24 +1,27 @@
 <template>
     <div class="login-container">
         <!-- username -->
-        <el-form class="login-form">
+        <el-form class="login-form" :model="loginForm" :rules="loginRules">
             <div class="title-container">
                 <h3 class="title">用户登录</h3>
             </div>
-            <el-form-item>
+            <el-form-item prop="username">
                 <span class="svg-container">
-                    <my-icon icon="https://res.lgdsunday.club/user.svg"></my-icon>
+                    <el-icon><Avatar /></el-icon>
                 </span>
-                <el-input placeholder="用户名" type="text" name="username"></el-input>
+                <el-input v-model="loginForm.username" placeholder="用户名" type="text" name="username"></el-input>
             </el-form-item>
             <!-- password -->
-            <el-form-item>
+            <el-form-item prop="password">
                 <span class="svg-container">
-                    <el-icon><Avatar /></el-icon>
+                    <el-icon><Lock /></el-icon>
                 </span>
-                <el-input placeholder="密码" type="text" name="password"></el-input>
-                <span class="svg-container">
-                    <el-icon><Avatar /></el-icon>
+                <el-input v-model="loginForm.password" placeholder="密码" :type="passwordType" name="password"></el-input>
+                <span class="svg-container" @click="switchPassword">
+                    <el-icon>
+                        <View v-if="passwordType === 'password'" />
+                        <Hide v-if="passwordType === 'text'" />
+                    </el-icon>
                 </span>
             </el-form-item>
             <!-- 登录按钮 -->
@@ -29,8 +32,41 @@
 </template>
     
 <script setup lang='ts'>
-import {Avatar} from '@element-plus/icons-vue'
-import myIcon from '@/components/myIcon/myIcon.vue'
+import {Avatar, Lock, View, Hide} from '@element-plus/icons-vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { validatePassword, type LoginForm } from './login'
+// import myIcon from '@/components/myIcon/myIcon.vue'
+// 登录表单
+const loginForm = reactive<LoginForm>({
+    username: 'admin',
+    password: '12345'
+})
+const loginRules = reactive<FormRules>({
+    username: [
+        {
+            required: true,
+            trigger: 'blur',
+            message: '请输入用户名'
+        }
+    ],
+    password: [
+        {
+            required: true,
+            trigger: 'blur',
+            validator: validatePassword,
+        }
+    ]
+})
+// 切换密码是否可见
+const passwordType = ref('password')
+const switchPassword = () => {
+    if (passwordType.value === 'password') {
+        passwordType.value = 'text'
+    } else {
+        passwordType.value = 'password'
+    }
+}
 </script>
     
 <style lang="scss" scoped>
