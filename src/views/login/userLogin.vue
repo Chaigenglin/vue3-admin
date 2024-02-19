@@ -1,7 +1,7 @@
 <template>
     <div class="login-container">
         <!-- username -->
-        <el-form class="login-form" :model="loginForm" :rules="loginRules">
+        <el-form ref="loginFormRef" class="login-form" :model="loginForm" :rules="loginRules">
             <div class="title-container">
                 <h3 class="title">用户登录</h3>
             </div>
@@ -25,7 +25,7 @@
                 </span>
             </el-form-item>
             <!-- 登录按钮 -->
-            <el-button type="primary" style="width: 100%; margin-bottom: 30px;">登录</el-button>
+            <el-button type="primary" style="width: 100%; margin-bottom: 30px;" @click="handleLogin" :loading="loading">登录</el-button>
         </el-form>
 
     </div>
@@ -33,9 +33,10 @@
     
 <script setup lang='ts'>
 import {Avatar, Lock, View, Hide} from '@element-plus/icons-vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormRules, FormInstance } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { validatePassword, type LoginForm } from './login'
+import { useLoginStore } from '@/stores/index'
 // import myIcon from '@/components/myIcon/myIcon.vue'
 // 登录表单
 const loginForm = reactive<LoginForm>({
@@ -66,6 +67,29 @@ const switchPassword = () => {
     } else {
         passwordType.value = 'password'
     }
+}
+// 登录
+const loading = ref(false)
+const loginFormRef = ref<FormInstance>()
+const store = useLoginStore()
+const handleLogin = () => {
+    // 表单校验
+    console.log(loginFormRef.value);
+    
+    loginFormRef.value?.validate(vaild => {
+        if(!vaild) return
+        loading.value = true
+        store.login(loginForm).then(() => {
+            loading.value = false
+        }).catch(err => {
+            console.log(err)
+            loading.value = false
+            
+        })
+    })
+    // 登录动作
+
+    // 登录后处理
 }
 </script>
     

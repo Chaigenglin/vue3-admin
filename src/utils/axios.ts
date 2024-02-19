@@ -1,9 +1,24 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 // import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 const instance = axios.create({
   baseURL: import.meta.env.BASE_URL,
   timeout: 5000
 })
-
-// instance.interceptors.request()
+// 请求拦截
+instance.interceptors.response.use(
+  (response) => {
+    const { success, data, message } = response.data
+    if (success) {
+      return data
+    } else {
+      ElMessage.error(message)
+      return Promise.reject(new Error(message))
+    }
+  },
+  (err) => {
+    ElMessage.error(err.message)
+    return Promise.reject(new Error(err.message))
+  }
+)
 export default instance
