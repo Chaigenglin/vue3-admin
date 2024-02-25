@@ -1,6 +1,6 @@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
-import { LoginUsers } from './data'
+import { LoginUsers, UserInfo } from './data'
 const mock = new MockAdapter(axios)
 const createRandDelay = (min = 400, max = 1000) => Math.ceil(Math.random() * (max - min)) + min // 随机延迟 400 - 1000 ms
 mock.onPost('/sys/login').reply((config) => {
@@ -15,15 +15,22 @@ mock.onPost('/sys/login').reply((config) => {
           return true
         }
       })
-      console.log(123, LoginUsers, hasUser, user)
+      console.log(123, LoginUsers, hasUser)
       if (hasUser) {
         resolve([
           200,
-          { code: 200, msg: 'Login Success!', user, success: true, data: { token: 'cgl123-123' } }
+          { code: 200, msg: 'Login Success!', success: true, data: { token: 'cgl123-123' } }
         ])
       } else {
         resolve([200, { code: 500, msg: 'username or password invalid!' }])
       }
+    }, createRandDelay())
+  })
+})
+mock.onGet('/sys/getUserInfo').reply((confing) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve([200, UserInfo])
     }, createRandDelay())
   })
 })

@@ -19,8 +19,6 @@
     import AppMain from './components/AppMain.vue'
     import NavBar from './components/NavBar.vue'
     import styles from '../styles/variables.module.scss'
-    console.log(styles);
-    
 </script>
 <style lang="scss" scoped>
 @import '../styles/mixins.scss';
