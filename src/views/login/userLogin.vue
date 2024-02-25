@@ -41,7 +41,7 @@ import { useLoginStore } from '@/stores/index'
 // 登录表单
 const loginForm = reactive<LoginForm>({
     username: 'admin',
-    password: '12345'
+    password: '000000'
 })
 const loginRules = reactive<FormRules>({
     username: [
@@ -79,9 +79,11 @@ const handleLogin = () => {
     loginFormRef.value?.validate(vaild => {
         if(!vaild) return
         loading.value = true
-        store.login(loginForm).then(() => {
+        store.login(loginForm).then((res) => {
+            console.log(res);
             loading.value = false
-        }).catch(err => {
+        })
+        .catch(err => {
             console.log(err)
             loading.value = false
             

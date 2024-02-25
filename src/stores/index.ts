@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { login } from '@/api/sys'
 import md5 from 'md5'
 import { setItem, getItem } from '../utils/storage'
+import router from '@/router'
 
 export const useLoginStore = defineStore('login', {
   state: () => ({
@@ -13,12 +14,14 @@ export const useLoginStore = defineStore('login', {
       return new Promise((resolve, reject) => {
         login({
           username,
-          password: md5(password)
+          // password: md5(password)
+          password
         })
-          .then((data) => {
-            console.log(data, data.data.data.token)
-            this.setToken(data.data.data.token)
-            resolve(data)
+          .then((res) => {
+            console.log(res)
+            this.setToken(res.data.token)
+            router.push('/')
+            resolve(res)
           })
           .catch((err) => {
             reject(err)

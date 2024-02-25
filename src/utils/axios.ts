@@ -8,9 +8,9 @@ const instance = axios.create({
 // 请求拦截
 instance.interceptors.response.use(
   (response) => {
-    const { success, data, message } = response.data
+    const { success, message } = response.data
     if (success) {
-      return data
+      return response.data
     } else {
       ElMessage.error(message)
       return Promise.reject(new Error(message))
